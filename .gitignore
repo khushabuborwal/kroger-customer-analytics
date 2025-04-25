@@ -1,1 +1,18 @@
+# Virtual environment
 .venv/
+
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# macOS files
+.DS_Store
+
+# VS Code settings
+.vscode/

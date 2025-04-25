@@ -1,0 +1,23 @@
+<hr class="bg-white my-5"> shdfhjzsdfjzkdsfbhdfkdjhf
+<h5 class="text-white">Upload Retail Data</h5>
+
+<form action="/upload" method="POST" enctype="multipart/form-data" class="row g-3 text-dark bg-white p-4 rounded shadow">
+  <div class="col-md-6">
+    <label for="file" class="form-label">Choose CSV File</label>
+    <input class="form-control" type="file" name="file" id="file" accept=".csv" required>
+  </div>
+
+  <div class="col-md-6">
+    <label for="table" class="form-label">Select Data Type</label>
+    <select class="form-select" name="table" id="table" required>
+      <option value="">-- Select Table --</option>
+      <option value="Transactions">Transactions</option>
+      <option value="Households">Households</option>
+      <option value="Products">Products</option>
+    </select>
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-success w-100">Upload</button>
+  </div>
+</form>
