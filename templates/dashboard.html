@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Retail Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .brand-chart-container {
+            width: 100%;
+            max-width: 100%;
+            height: 298px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+        }
+        #brandChart {
+            max-height: 300px !important;
+            width: auto !important;
+        }
+        .stat-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <h1 class="text-center mb-5">Retail Dashboard</h1>
+
+        <!-- Metric Cards Row -->
+        <!-- <div class="row text-center mb-4">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h4>$273.80</h4>
+                    <p>Total Sales Per Labor Hour</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h4>$1.22M</h4>
+                    <p>Total Sales for All Departments</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h4>$5.44</h4>
+                    <p>Average Sales per Unit Area</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h4>$178.67</h4>
+                    <p>Average Sales Revenue per Hour</p>
+                </div>
+            </div>
+        </div> -->
+
+        <div class="row g-4">
+            <!-- Demographics and Engagement -->
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">Demographics and Engagement</h5>
+                        <canvas id="demoChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Engagement Over Time -->
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">Engagement Over Time</h5>
+                        <canvas id="timeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Units Sold vs Total Spend (Combo Chart) -->
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-secondary">Units Sold vs Total Spend (Top 10 Commodities)</h5>
+                        <canvas id="comboChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Brand Preferences (Pie Chart) -->
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-info">Brand Preferences</h5>
+                        <div class="brand-chart-container">
+                            <canvas id="brandChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seasonal Trends -->
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-warning">Seasonal Trends</h5>
+                        <canvas id="seasonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Basket Analysis -->
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-danger">Top 5 Product Combinations</h5>
+                        <canvas id="basketChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="/home" class="btn btn-outline-primary">Go Back</a>
+        </div>
+    </div>
+
+    <script>
+        const data = JSON.parse('{{ data|safe }}');
+
+        // Demographics and Engagement Chart
+        const demoLabels = data.demographics.map(item => `${item.Store_region}, ${item.Age_range}`);
+        const demoValues = data.demographics.map(item => item.avg_spend);
+        new Chart(document.getElementById('demoChart'), {
+            type: 'bar',
+            data: {
+                labels: demoLabels,
+                datasets: [{
+                    label: 'Average Spend',
+                    data: demoValues,
+                    backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        // Engagement Over Time Chart
+        const timeLabels = data.engagement_over_time.map(item => `${item.Year}-${item.Month}`);
+        const timeValues = data.engagement_over_time.map(item => item.total_spend);
+        new Chart(document.getElementById('timeChart'), {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [{
+                    label: 'Total Spend',
+                    data: timeValues,
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    backgroundColor: 'rgba(40, 167, 69, 0.2)'
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        // Basket Analysis Chart
+        const basketLabels = data.basket_analysis.map(item => item.Commodity);
+        const basketValues = data.basket_analysis.map(item => item.count);
+        new Chart(document.getElementById('basketChart'), {
+            type: 'bar',
+            data: {
+                labels: basketLabels,
+                datasets: [{
+                    label: 'Count',
+                    data: basketValues,
+                    backgroundColor: 'rgba(220, 53, 69, 0.5)',
+                    borderColor: 'rgba(220, 53, 69, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        // Seasonal Trends Chart
+        const seasonLabels = data.seasonal_trends.map(item => `Month ${item.Month}`);
+        const seasonValues = data.seasonal_trends.map(item => item.total_spend);
+        new Chart(document.getElementById('seasonChart'), {
+            type: 'line',
+            data: {
+                labels: seasonLabels,
+                datasets: [{
+                    label: 'Total Spend',
+                    data: seasonValues,
+                    borderColor: 'rgba(255, 193, 7, 1)',
+                    backgroundColor: 'rgba(255, 193, 7, 0.2)'
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        // Brand Preferences Chart (Pie Chart Corrected)
+        const brandLabels = data.brand_preferences.map(item => item.Loyalty_flag == 'Y' ? 'Loyal' : 'Non-Loyal');
+        const brandValues = data.brand_preferences.map(item => item.count);
+        new Chart(document.getElementById('brandChart'), {
+            type: 'pie',
+            data: {
+                labels: brandLabels,
+                datasets: [{
+                    label: 'Count',
+                    data: brandValues,
+                    backgroundColor: ['rgba(23, 162, 184, 0.7)', 'rgba(255, 193, 7, 0.7)'],
+                    borderColor: ['rgba(23, 162, 184, 1)', 'rgba(255, 193, 7, 1)'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            boxWidth: 20,
+                            padding: 15
+                        }
+                    }
+                }
+            }
+        });
+
+        // Units Sold vs. Total Spend for each Commodity
+        const comboLabels = data.total_spend.map(item => item.Commodity);
+        const unitsData = data.total_spend.map(item => item.total_units);
+        const spendData = data.total_spend.map(item => item.total_spend);
+
+        new Chart(document.getElementById('comboChart'), {
+            type: 'bar',
+            data: {
+                labels: comboLabels,
+                datasets: [
+                    {
+                        label: 'Units Sold',
+                        data: unitsData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Total Spend ($)',
+                        data: spendData,
+                        type: 'line',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                stacked: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Units Sold'
+                        }
+                    },
+                    y1: {
+                        beginAtZero: true,
+                        position: 'right',
+                        grid: {
+                            drawOnChartArea: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Total Spend ($)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, flash, session, url_for
 import pyodbc
 import pandas as pd
+import json
 app = Flask(__name__)
 app.secret_key = 'cloud_final_project'  # Needed for sessions and flash messages
 
@@ -123,66 +124,87 @@ def dashboard():
         flash("Please log in first.")
         return redirect(url_for('login'))
 
-    # # Establish database connection
-    # conn = get_db_connection()
+    # Establish database connection
+    conn = get_db_connection()
 
-    # # Query 1: Demographics and Engagement
-    # query_demo = """
-    #     SELECT Store_region, Age_range, AVG(Spend) as avg_spend, AVG(Units) as avg_units
-    #     FROM TransformedData
-    #     GROUP BY Store_region, Age_range
-    # """
-    # df_demo = pd.read_sql(query_demo, conn)
+    # Query 1: Demographics and Engagement
+    query_demo = """
+        SELECT 
+            T.Store_region, 
+            H.Age_range, 
+            AVG(T.Spend) AS avg_spend, 
+            AVG(T.Units) AS avg_units
+        FROM 
+            Transactions T
+        JOIN 
+            Households H ON T.Hshd_num = H.Hshd_num
+        GROUP BY 
+            T.Store_region, H.Age_range
+    """
+    df_demo = pd.read_sql(query_demo, conn)
 
-    # # Query 2: Engagement Over Time
-    # query_time = """
-    #     SELECT Year, Month(Purchase_Date) as Month, SUM(Spend) as total_spend
-    #     FROM TransformedData
-    #     GROUP BY Year, Month(Purchase_Date)
-    #     ORDER BY Year, Month(Purchase_Date)
-    # """
-    # df_time = pd.read_sql(query_time, conn)
+    # Query 2: Engagement Over Time
+    query_time = """
+        SELECT Year, Month(Date) as Month, SUM(Spend) as total_spend
+        FROM Transactions
+        GROUP BY Year, Month(Date)
+        ORDER BY Year, Month(Date)
+    """
+    df_time = pd.read_sql(query_time, conn)
 
-    # # Query 3: Basket Analysis
-    # query_basket = """
-    #     SELECT TOP 5 Commodity, COUNT(*) as count
-    #     FROM TransformedData
-    #     GROUP BY Commodity
-    #     ORDER BY COUNT(*) DESC
-    # """
-    # df_basket = pd.read_sql(query_basket, conn)
+    # Query 3: Basket Analysis
+    query_basket = """
+        SELECT TOP 5 P.Commodity, COUNT(*) AS count FROM Transactions T
+        JOIN Products P ON T.Product_num = P.Product_num
+        GROUP BY P.Commodity
+        ORDER BY COUNT(*) DESC
+    """
+    df_basket = pd.read_sql(query_basket, conn)
 
-    # # Query 4: Seasonal Trends
-    # query_season = """
-    #     SELECT Month(Purchase_Date) as Month, SUM(Spend) as total_spend
-    #     FROM TransformedData
-    #     GROUP BY Month(Purchase_Date)
-    #     ORDER BY Month(Purchase_Date)
-    # """
-    # df_season = pd.read_sql(query_season, conn)
+    # Query 4: Seasonal Trends
+    query_season = """
+        SELECT Month(Date) as Month, SUM(Spend) as total_spend
+        FROM Transactions
+        GROUP BY Month(Date)
+        ORDER BY Month(Date)
+    """
+    df_season = pd.read_sql(query_season, conn)
 
-    # # Query 5: Brand Preferences
-    # query_brand = """
-    #     SELECT Loyalty_flag, COUNT(*) as count
-    #     FROM TransformedData
-    #     GROUP BY Loyalty_flag
-    # """
-    # df_brand = pd.read_sql(query_brand, conn)
+    # Query 5: Brand Preferences
+    query_brand = """
+        SELECT H.Loyalty_flag, COUNT(*) AS count
+        FROM Transactions T
+        JOIN Households H ON T.Hshd_num = H.Hshd_num
+        GROUP BY H.Loyalty_flag
+    """
+    df_brand = pd.read_sql(query_brand, conn)
 
-    # # Close the database connection
-    # conn.close()
+    # Query 6: Units Sold vs. Total Spend for each Commodity
+    query_spend = """
+        SELECT p.Commodity, SUM(t.Units) AS total_units, SUM(t.Spend) AS total_spend
+        FROM  TRANSACTIONS t
+        JOIN PRODUCTS p ON t.Product_num = p.Product_num
+        GROUP BY p.Commodity
+        ORDER BY total_spend DESC
+    """
 
-    # # Convert data to JSON for the frontend
-    # data = {
-    #     "demographics": df_demo.to_dict(orient='records'),
-    #     "engagement_over_time": df_time.to_dict(orient='records'),
-    #     "basket_analysis": df_basket.to_dict(orient='records'),
-    #     "seasonal_trends": df_season.to_dict(orient='records'),
-    #     "brand_preferences": df_brand.to_dict(orient='records'),
-    # }
+    df_spend = pd.read_sql(query_spend, conn)
+
+    # Close the database connection
+    conn.close()
+
+    # Convert data to JSON for the frontend
+    data = {
+        "demographics": df_demo.to_dict(orient='records'),
+        "engagement_over_time": df_time.to_dict(orient='records'),
+        "basket_analysis": df_basket.to_dict(orient='records'),
+        "seasonal_trends": df_season.to_dict(orient='records'),
+        "brand_preferences": df_brand.to_dict(orient='records'),
+        "total_spend": df_spend.to_dict(orient='records'),
+    }
 
     # Render the dashboard template with data
-    return render_template('dashboard.html', data=[])
+    return render_template('dashboard.html', data=json.dumps(data))
 
 if __name__ == "__main__":
     app.run(debug=True)
