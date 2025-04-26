@@ -1,3 +1,8 @@
 flask
 pyodbc
 pandas
+joblib
+numpy
+scikit-learn
+scipy
+mlxtend

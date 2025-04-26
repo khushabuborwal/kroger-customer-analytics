@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Retail Data</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body class="bg-light">
+
+<!-- 🌟 Navbar Start -->
+<nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background-color: #4A2669; color: #ffffff; font-weight: 600;">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home_page') }}">
+      <img src="{{ url_for('static', filename='retail_app_logo.png') }}" alt="Logo">
+    </a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'home_page' %}active{% endif %} text-white" href="{{ url_for('home_page') }}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %} text-white" href="{{ url_for('dashboard') }}">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'clv_prediction' %}active{% endif %} text-white" href="{{ url_for('clv_prediction') }}">CLV Prediction</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'basket_analysis' %}active{% endif %} text-white" href="{{ url_for('basket_analysis') }}">Basket Analysis</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'churn_prediction' %}active{% endif %} text-white" href="{{ url_for('churn_prediction') }}">Churn Prediction</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'upload' %}active{% endif %} text-white" href="{{ url_for('upload') }}">Upload Retail Data</a>
+        </li>
+        
+      </ul>
+      <span class="navbar-text text-white fw-bold">
+        Welcome {{ session.get('username', 'Guest') }}!
+      </span>
+    </div>
+  </div>
+</nav>
+<!-- 🌟 Navbar End -->
+
+<!-- 🌟 Upload Form Start -->
+<div class="d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+  <div class="card p-5 shadow-lg" style="min-width: 400px; max-width: 600px; width: 100%;">
+    <h3 class="text-center mb-4">Upload Retail Datasets</h3>
+
+    <form action="/upload-data" method="POST" enctype="multipart/form-data" class="text-dark">
+      <div class="mb-3">
+        <label for="transactions" class="form-label"><b>Upload Transactions CSV</b></label>
+        <input class="form-control" type="file" name="transactions" id="transactions" accept=".csv" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="households" class="form-label"><b>Upload Households CSV</b></label>
+        <input class="form-control" type="file" name="households" id="households" accept=".csv" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="products" class="form-label"><b>Upload Products CSV</b></label>
+        <input class="form-control" type="file" name="products" id="products" accept=".csv" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100" style="background-color: #4A2669;border-color: #4A2669;">Upload Files</button>
+    </form>
+
+  </div>
+</div>
+<!-- 🌟 Upload Form End -->
+
+</body>
+</html>

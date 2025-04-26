@@ -1,0 +1,36 @@
+thead th {
+    background-color: #4A2669 !important;
+    color: white !important;
+    font-weight: 600;
+}
+
+.custom_btn{
+    background-color: #4A2669 !important;
+    border-color: #4A2669;
+    color: white !important;
+}
+
+.nav-link:hover {
+    background-color: #5e3380; /* Slightly lighter purple on hover */
+    border-radius: 8px;         /* Rounded look on hover */
+}
+
+.nav-link.active {
+    background-color: #ffffff;   /* White background */
+    color: #4A2669 !important;   /* Purple text */
+    font-weight: bold;
+    border-radius: 8px;
+}
+  
+.navbar {
+    height: 70px; /* Set fixed height */
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  
+  .navbar-brand img {
+    height: 60px; /* Logo inside brand */
+    max-height: 100%;
+    object-fit: contain;
+  }
+  
