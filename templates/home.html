@@ -17,7 +17,7 @@
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link {% if request.endpoint == 'home_page' %}active{% endif %} text-white" href="{{ url_for('home_page') }}">Home</a>
+            <a class="nav-link {% if request.endpoint == 'home_page' or request.endpoint == 'search' %}active{% endif %} text-white" href="{{ url_for('home_page') }}">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %} text-white" href="{{ url_for('dashboard') }}">Dashboard</a>
