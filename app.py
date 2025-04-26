@@ -1,7 +1,25 @@
 from flask import Flask, render_template, request, redirect, flash, session, url_for
-
+import pyodbc
+import pandas as pd
 app = Flask(__name__)
 app.secret_key = 'cloud_final_project'  # Needed for sessions and flash messages
+
+# Azure SQL Database connection settings
+server = 'retail-app-server.database.windows.net'
+database = 'kroger-database'
+username = 'Khushbu-Afreen'
+password = 'KAProject1!'
+driver = '{ODBC Driver 17 for SQL Server}'  # Ensure you have this installed
+
+def get_db_connection():
+    conn = pyodbc.connect(
+        'DRIVER=' + driver + 
+        ';SERVER=' + server + 
+        ';PORT=1433;DATABASE=' + database + 
+        ';UID=' + username + 
+        ';PWD=' + password
+    )
+    return conn
 
 # Simulated user database
 users = {}
@@ -53,39 +71,48 @@ def home_page():
     if 'username' not in session:
         return redirect('/')
     
-    # Sample data – replace with DB query in real app
-    sample_data = [
-        {'Hshd_num': 10, 'Basket_num': 201, 'Purchase_Date': '2018-08-19', 'Product_num': '153300', 'Department': 'FOOD', 'Commodity': 'GROCERY STAPLE', 'Spend': 7.29, 'Units': 1, 'Store_region': 'EAST', 'Week_num': 33, 'Year': 2018},
-        {'Hshd_num': 10, 'Basket_num': 201, 'Purchase_Date': '2018-08-19', 'Product_num': '248739', 'Department': 'PHARMA', 'Commodity': 'MEDICATION', 'Spend': 2.99, 'Units': 1, 'Store_region': 'EAST', 'Week_num': 33, 'Year': 2018},
-        {'Hshd_num': 10, 'Basket_num': 201, 'Purchase_Date': '2018-08-19', 'Product_num': '153300', 'Department': 'FOOD', 'Commodity': 'GROCERY STAPLE', 'Spend': 7.29, 'Units': 1, 'Store_region': 'EAST', 'Week_num': 33, 'Year': 2018},
-        {'Hshd_num': 10, 'Basket_num': 201, 'Purchase_Date': '2018-08-19', 'Product_num': '248739', 'Department': 'PHARMA', 'Commodity': 'MEDICATION', 'Spend': 2.99, 'Units': 1, 'Store_region': 'EAST', 'Week_num': 33, 'Year': 2018},
-        {'Hshd_num': 10, 'Basket_num': 201, 'Purchase_Date': '2018-08-19', 'Product_num': '153300', 'Department': 'FOOD', 'Commodity': 'GROCERY STAPLE', 'Spend': 7.29, 'Units': 1, 'Store_region': 'EAST', 'Week_num': 33, 'Year': 2018},
-        {'Hshd_num': 10, 'Basket_num': 201, 'Purchase_Date': '2018-08-19', 'Product_num': '248739', 'Department': 'PHARMA', 'Commodity': 'MEDICATION', 'Spend': 2.99, 'Units': 1, 'Store_region': 'EAST', 'Week_num': 33, 'Year': 2018},
-        {'Hshd_num': 10, 'Basket_num': 201, 'Purchase_Date': '2018-08-19', 'Product_num': '153300', 'Department': 'FOOD', 'Commodity': 'GROCERY STAPLE', 'Spend': 7.29, 'Units': 1, 'Store_region': 'EAST', 'Week_num': 33, 'Year': 2018},
-        {'Hshd_num': 10, 'Basket_num': 201, 'Purchase_Date': '2018-08-19', 'Product_num': '248739', 'Department': 'PHARMA', 'Commodity': 'MEDICATION', 'Spend': 2.99, 'Units': 1, 'Store_region': 'EAST', 'Week_num': 33, 'Year': 2018},
-        {'Hshd_num': 10, 'Basket_num': 201, 'Purchase_Date': '2018-08-19', 'Product_num': '153300', 'Department': 'FOOD', 'Commodity': 'GROCERY STAPLE', 'Spend': 7.29, 'Units': 1, 'Store_region': 'EAST', 'Week_num': 33, 'Year': 2018},
-        {'Hshd_num': 10, 'Basket_num': 201, 'Purchase_Date': '2018-08-19', 'Product_num': '248739', 'Department': 'PHARMA', 'Commodity': 'MEDICATION', 'Spend': 2.99, 'Units': 1, 'Store_region': 'EAST', 'Week_num': 33, 'Year': 2018},
-        # Add more rows here...
-    ]
+    filtered_data = []
+    hshd_num = 10
 
-    return render_template('home.html', username=session['username'], data=sample_data)
+    conn = get_db_connection()
+
+    query = """
+            SELECT T.Hshd_num, T.Basket_num, T.date, P.Product_num,
+                   P.Department, P.Commodity, T.Spend, T.Units, T.Store_region, T.Week_num, T.Year
+            FROM Transactions T
+            JOIN Products P ON T.Product_num = P.Product_num
+            WHERE T.Hshd_num = ?
+            ORDER BY T.Hshd_num, T.Basket_num, T.date, P.Product_num
+        """
+
+    df = pd.read_sql(query, conn, params=(hshd_num,))
+    filtered_data = df.to_dict(orient='records')
+    conn.close()
+
+    return render_template('home.html', username=session['username'], data=filtered_data, hshd_num=hshd_num)
 
 # Search Household number
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     if request.method == 'POST':
         hshd_num = int(request.form['hshd_num'])
+        conn = get_db_connection()
 
-        # Replace this with a DB query later
-        all_data = [
-            {'Hshd_num': 10, 'Basket_num': 201, 'Purchase_Date': '2018-08-19', 'Product_num': '153300', 'Department': 'FOOD', 'Commodity': 'GROCERY STAPLE', 'Spend': 7.29, 'Units': 1, 'Store_region': 'EAST', 'Week_num': 33, 'Year': 2018},
-            {'Hshd_num': 10, 'Basket_num': 201, 'Purchase_Date': '2018-08-19', 'Product_num': '248739', 'Department': 'PHARMA', 'Commodity': 'MEDICATION', 'Spend': 2.99, 'Units': 1, 'Store_region': 'EAST', 'Week_num': 33, 'Year': 2018},
-            {'Hshd_num': 11, 'Basket_num': 205, 'Purchase_Date': '2018-09-01', 'Product_num': '189009', 'Department': 'FOOD', 'Commodity': 'BAKERY', 'Spend': 3.50, 'Units': 1, 'Store_region': 'EAST', 'Week_num': 34, 'Year': 2018},
-        ]
+        query = """
+            SELECT T.Hshd_num, T.Basket_num, T.date, P.Product_num,
+                   P.Department, P.Commodity, T.Spend, T.Units, T.Store_region, T.Week_num, T.Year
+            FROM Transactions T
+            JOIN Products P ON T.Product_num = P.Product_num
+            WHERE T.Hshd_num = ?
+            ORDER BY T.Hshd_num, T.Basket_num, T.date, P.Product_num
+        """
 
-        filtered = [row for row in all_data if row['Hshd_num'] == hshd_num]
+        df = pd.read_sql(query, conn, params=(hshd_num,))
+        filtered_data = df.to_dict(orient='records')
+        
+        conn.close()
 
-        return render_template('home.html', hshd_num=hshd_num, data=filtered)
+        return render_template('home.html', hshd_num=hshd_num, data=filtered_data)
 
     return render_template('home.html', data=None)
 
