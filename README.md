@@ -9,6 +9,8 @@
 A cloud-based retail analytics platform that predicts **Customer Lifetime Value (CLV)**, identifies **cross-selling opportunities**, and detects **customers at risk of churn**.  
 Built entirely on **Microsoft Azure** with **end-to-end data pipelines**, **machine learning models**, and an **interactive dashboard**.
 
+Dataset - Kroger Retail Data (84.51)
+
 ---
 
 ## 📑 Table of Contents
