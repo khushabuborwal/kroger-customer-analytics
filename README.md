@@ -1,7 +1,7 @@
 # 🛒 Retail Analytics Platform – Azure Cloud Computing
 
 [![Azure](https://img.shields.io/badge/Powered%20by-Microsoft%20Azure-0089D6?logo=microsoft-azure)](https://azure.microsoft.com)
-[![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python)](https://www.python.org/)
 
 
 **Live Demo:** [Retail Analytics Web App](https://retailapp-hnhjfeetebeee5b4.eastus2-01.azurewebsites.net/)  
