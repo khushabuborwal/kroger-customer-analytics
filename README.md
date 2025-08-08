@@ -122,13 +122,26 @@ CSV Data → Azure Blob Storage
 
 ## 📸 Screenshots
 
-![Login Page UI](UI-Screenshots/login.png "Login Page UI")  
-![Home Page UI](UI-Screenshots/Homepage.png "Home Page UI")  
-![Dashboard UI](UI-Screenshots/Dashboard.png "Dashboard UI")  
-![Upload_Data UI](UI-Screenshots/Upload-data.png "Upload_Data UI")  
-![CLV UI](UI-Screenshots/CLV.png "CLV UI")  
-![Basket_Analysis UI](UI-Screenshots/Basket.png "Basket_Analysis UI")  
-![Customer_Churn UI](UI-Screenshots/Churn.png "Customer_Churn UI")  
+- Login Page -  
+![Login Page UI](https://github.com/khushabuborwal/kroger-customer-analytics/blob/main/UI-Screeshots/login.png "Login Page UI")
+
+- Home Page -  
+![Home Page UI](https://github.com/khushabuborwal/kroger-customer-analytics/blob/main/UI-Screeshots/Homepage.png "Home Page UI")
+
+- Dashboard -  
+![Dashboard UI](https://github.com/khushabuborwal/kroger-customer-analytics/blob/main/UI-Screeshots/Dashboard.png "Dashboard UI")
+
+- Upload Retail Data -  
+![Upload_Data UI](https://github.com/khushabuborwal/kroger-customer-analytics/blob/main/UI-Screeshots/Upload-data.png "Upload_Data UI")
+
+- Customer Lifetime Value (CLV) -  
+![CLV UI](https://github.com/khushabuborwal/kroger-customer-analytics/blob/main/UI-Screeshots/CLV.png "CLV UI")
+
+- Basket Analysis -  
+![Basket_Analysis UI](https://github.com/khushabuborwal/kroger-customer-analytics/blob/main/UI-Screeshots/Basket.png "Basket_Analysis UI")
+
+- Customer Churn -  
+![Customer_Churn UI](https://github.com/khushabuborwal/kroger-customer-analytics/blob/main/UI-Screeshots/Churn.png "Customer_Churn UI")  
 
 
 ## 📈 Business Impact
