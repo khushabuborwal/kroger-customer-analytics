@@ -122,10 +122,14 @@ CSV Data → Azure Blob Storage
 
 ## 📸 Screenshots
 
-Login Page	
-Dashboard – CLV Segmentation
-Basket Analysis
-Churn Prediction
+![Login Page UI](UI-Screenshots/login.png "Login Page UI")  
+![Home Page UI](UI-Screenshots/Homepage.png "Home Page UI")  
+![Dashboard UI](UI-Screenshots/Dashboard.png "Dashboard UI")  
+![Upload_Data UI](UI-Screenshots/Upload-data.png "Upload_Data UI")  
+![CLV UI](UI-Screenshots/CLV.png "CLV UI")  
+![Basket_Analysis UI](UI-Screenshots/Basket.png "Basket_Analysis UI")  
+![Customer_Churn UI](UI-Screenshots/Churn.png "Customer_Churn UI")  
+
 
 ## 📈 Business Impact
 🎯 Focused Marketing – Prioritize Platinum customers for retention  
